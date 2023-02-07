@@ -49,7 +49,7 @@ export default async question => {
 	if (previousMessages.length > MAX_PREVIOUS_MESSAGES_LENGTH)
 		previousMessages.splice(0, 2)
 
-	console.log((prompt).replace(/[\n\r]/g, "*").replace(/ /g, "_"))
+	console.log("\x1b[32m" + prompt + "\x1b[36m\x1b[5m" + reply + "\x1b[0m")
 
 	return reply
 }
