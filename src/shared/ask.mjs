@@ -1,9 +1,5 @@
-import characters from '../characters/characters.json' assert { type: 'json' }
 import Queue from './queue.mjs'
 
-const worldInfoData = characters.julia.worldInfoData
-const memory = characters.julia.memory
-const story = characters.julia.story.join(`\n`)
 const previousMessages = []
 const MAX_PREVIOUS_MESSAGES_LENGTH = 28
 
