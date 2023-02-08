@@ -7,7 +7,11 @@ export default {
 		if (!interaction.mentions.has(interaction.client.user)) 
 			return
 
-		const question = interaction.content.replace(`<@${interaction.client.user.id}>`, ``).trim()
+		const mentionRegex = new RegExp(`<@${interaction.client.user.id}>`, "g");
+		const question = interaction.content.replace(mentionRegex, ``).trim()
+
+		if (question.length === 0)
+			return
 
 		const content = await ask(question)
 
