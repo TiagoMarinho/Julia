@@ -5,40 +5,50 @@ const worldInfoData = characters.julia.worldInfoData
 const memory = characters.julia.memory
 const story = characters.julia.story.join(`\n`)
 const previousMessages = []
-const MAX_PREVIOUS_MESSAGES_LENGTH = 40
+const MAX_PREVIOUS_MESSAGES_LENGTH = 28
 
 const queue = new Queue()
 
 export default async question => {
-	const formattedQuestion = `You: ` + question.trim() + `\nJulia:`
 
-	const traits = worldInfoData.traits.join(`, `)
-	const worldInfo = worldInfoData.name + `[${traits}]`
+	const storyPayload = {
+		name: "julia"
+	}
+	const storyEndpoint = `http://127.0.0.1:5000/api/v1/story/load/`
+
+	const formattedQuestion = `You: ` + question.trim() + `\nJulia:`
 	const chatHistory = previousMessages.join(``)
 
-	const prompt = [
-		memory, `\n\n`, 
-		worldInfo, `\n\n`, 
-		story, `\n`, 
-		chatHistory, 
-		formattedQuestion
-	].join(``)
+	const prompt = chatHistory + formattedQuestion
 
 	const payload = {
 			prompt,
 			frmttriminc: true,
 			//singleline: true,
+			rep_pen: 1.3,
 			frmtrmblln: true,
-			temperature: 0.7,
+			temperature: 0.625,
+			use_memory: true,
+			use_story: true,
+			use_world_info: true
 	}
 	const endpoint = `http://127.0.0.1:5000/api/v1/generate/`
-	const response = await queue.add(async _ => await fetch(endpoint, {
-		method: `post`,
-		body: JSON.stringify(payload),
-		headers: {
-			'Content-Type': 'application/json',
-		}
-	}))
+	const response = await queue.add(async _ => {
+		await fetch(storyEndpoint, {
+			method: `put`,
+			body: JSON.stringify(storyPayload),
+			headers: {
+				'Content-Type': 'application/json',
+			}
+		})
+		return await fetch(endpoint, {
+			method: `post`,
+			body: JSON.stringify(payload),
+			headers: {
+				'Content-Type': 'application/json',
+			}
+		})
+	})
 
 	const data = await response.json()
 
