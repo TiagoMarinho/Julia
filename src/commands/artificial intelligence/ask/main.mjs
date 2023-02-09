@@ -1,6 +1,7 @@
 import { EmbedBuilder } from 'discord.js'
 import data from './data.mjs'
 import ask from '../../../shared/ask.mjs'
+import characters from '../../../shared/characters.mjs'
 
 export default {
 	data,
@@ -9,8 +10,11 @@ export default {
 		await interaction.deferReply({ ephemeral })
 
 		const question = interaction.options.getString(`question`)
+		const characterKey = interaction.options.getString(`character`) ?? `default`
 
-		const content = await ask(question)
+		const character = characters[characterKey]
+
+		const content = await ask(character, question)
 
 		await interaction.editReply({ content })
 	}

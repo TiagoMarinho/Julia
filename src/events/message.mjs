@@ -1,5 +1,6 @@
 import { Events } from 'discord.js'
 import ask from '../shared/ask.mjs'
+import characters from '../shared/characters.mjs'
 
 export default {
 	name: Events.MessageCreate,
@@ -13,7 +14,7 @@ export default {
 		if (question.length === 0)
 			return
 
-		const content = await ask(question)
+		const content = await ask(characters.default, question)
 
 		await interaction.reply(content).catch(console.error)
 	},

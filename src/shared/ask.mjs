@@ -1,42 +1,39 @@
 import Queue from './queue.mjs'
 
-const previousMessages = []
-const MAX_PREVIOUS_MESSAGES_LENGTH = 28
+const MAX_PREVIOUS_MESSAGES_LENGTH = 30
 
 const queue = new Queue()
 
-export default async question => {
+export default async (character, question) => {
 
-	const storyPayload = {
-		name: "julia"
-	}
-	const storyEndpoint = `http://127.0.0.1:5000/api/v1/story/load/`
+	const chatHistory = character.chatHistory.join(`\n`)
+	const formattedQuestion = `You: ` + question.trim()
+	const responsePrefix = `${character.username}:`
 
-	const formattedQuestion = `You: ` + question.trim() + `\nJulia:`
-	const chatHistory = previousMessages.join(``)
-
-	const prompt = chatHistory + formattedQuestion
+	const prompt = [
+		character.memory, `\n\n`, 
+		character.worldInfo, `\n\n`, 
+		character.story.join(`\n`), `\n`, 
+		chatHistory, `\n`,
+		formattedQuestion, `\n`,
+		responsePrefix
+	].join(``)
 
 	const payload = {
 			prompt,
 			frmttriminc: true,
-			//singleline: true,
-			rep_pen: 1.3,
+			singleline: true,
+			rep_pen: 1.25,
 			frmtrmblln: true,
-			temperature: 0.625,
-			use_memory: true,
-			use_story: true,
-			use_world_info: true
+			temperature: 0.6,
+			max_length: 80,
+			max_context_length: 2048,
+			//use_memory: true,
+			//use_story: true,
+			//use_world_info: true
 	}
 	const endpoint = `http://127.0.0.1:5000/api/v1/generate/`
 	const response = await queue.add(async _ => {
-		await fetch(storyEndpoint, {
-			method: `put`,
-			body: JSON.stringify(storyPayload),
-			headers: {
-				'Content-Type': 'application/json',
-			}
-		})
 		return await fetch(endpoint, {
 			method: `post`,
 			body: JSON.stringify(payload),
@@ -48,14 +45,14 @@ export default async question => {
 
 	const data = await response.json()
 
-	const reply = data.results[0].text
+	const reply = data.results[0].text.trim()
 
-	previousMessages.push(formattedQuestion, reply)
+	character.chatHistory.push(formattedQuestion, responsePrefix + " " + reply)
 
-	if (previousMessages.length > MAX_PREVIOUS_MESSAGES_LENGTH)
-		previousMessages.splice(0, 2)
+	if (character.chatHistory.length > MAX_PREVIOUS_MESSAGES_LENGTH)
+		character.chatHistory.splice(0, 2)
 
-	console.log("\x1b[32m" + prompt + "\x1b[36m\x1b[5m" + reply + "\x1b[0m")
+	console.log("\x1b[32m" + prompt + " " + "\x1b[36m\x1b[5m" + reply + "\x1b[0m")
 
 	return reply
 }
