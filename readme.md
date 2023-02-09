@@ -1,5 +1,5 @@
 <h1 align="center"><img src="https://i.imgur.com/0ALd1j2.png" width="128"><br/>Julia</h1>
-<p align="center">Artificial intelligence chat bot for Discord</p>
+<p align="center">Artificial intelligence chatbot for Discord</p>
 
 ## Table of Contents
 
@@ -13,9 +13,9 @@
 
 ## How to use
 
-`You: @Julia What is your hair color?`
-
-`Julia: It's black actually.`
+> You: @Julia What is your hair color?
+>
+> Julia: It's black actually.
 
 ## Features
 
