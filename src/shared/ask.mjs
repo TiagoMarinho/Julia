@@ -1,6 +1,6 @@
 import Queue from './queue.mjs'
 
-const MAX_PREVIOUS_MESSAGES_LENGTH = 30
+const MAX_PREVIOUS_MESSAGES_LENGTH = 16
 
 const queue = new Queue()
 
@@ -10,11 +10,16 @@ export default async (character, question) => {
 	const formattedQuestion = `You: ` + question.trim()
 	const responsePrefix = `${character.username}:`
 
+	const persistentData = [
+		character.memory,
+		character.worldInfo,
+		character.exampleDialogue.map(m => m.join(`\n`)).join(`\n\n`),
+		character.story.join(`\n`)
+	].join(`\n\n`)
+
 	const prompt = [
-		character.memory, `\n\n`, 
-		character.worldInfo, `\n\n`, 
-		character.story.join(`\n`), `\n`, 
-		chatHistory, `\n`,
+		persistentData, `\n`, 
+		chatHistory, chatHistory ? `\n` : "",
 		formattedQuestion, `\n`,
 		responsePrefix
 	].join(``)
@@ -23,11 +28,16 @@ export default async (character, question) => {
 			prompt,
 			frmttriminc: true,
 			singleline: true,
-			rep_pen: 1.25,
+			rep_pen: 1.15,
 			frmtrmblln: true,
-			temperature: 0.6,
+			temperature: 0.55,
 			max_length: 80,
 			max_context_length: 2048,
+			"top_p": 0.2,
+			"top_k": 0,
+			"top_a": 0.0,
+			//"tfs": 0.68,
+			"typical": 1.0,
 			//use_memory: true,
 			//use_story: true,
 			//use_world_info: true
