@@ -13,9 +13,12 @@ export default {
 
 		if (question.length === 0)
 			return
+		
+		const typing = interaction.channel.sendTyping();
 
 		const content = await ask(characters.default, question)
 
+		await typing
 		await interaction.reply(content).catch(console.error)
 	},
 }
