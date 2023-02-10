@@ -8,7 +8,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const soph = {
+const julia = {
 	client: new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] }),
 	async loadEvents () {
 		const eventsPath = path.join(__dirname, 'events')
@@ -41,4 +41,4 @@ const soph = {
 		return this
 	}
 }
-soph.run()
+julia.run()
