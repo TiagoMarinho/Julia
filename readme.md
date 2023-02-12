@@ -1,17 +1,22 @@
-<h1 align="center"><img src="https://i.imgur.com/0ALd1j2.png" width="128"><br/>Julia</h1>
-<p align="center">Artificial intelligence chatbot for Discord</p>
+![Banner image](https://i.imgur.com/xsnMbwK.png")
 
 ## Table of Contents
 
-1. [How to use](#how-to-use)
-2. [Features](#features)
-3. [About](#more-about-julia)
-3. [Commands](#commands)
-3. [Installation](#installation)
-4. [Running](#running)
-5. [Contributing](#contributing)
+1. [About](#about)
+2. [How to use](#how-to-use)
+3. [Features](#features)
+4. [Commands](#commands)
+5. [Installation](#installation)
+6. [Running](#running)
+7. [Contributing](#contributing)
+
+## About
+
+Julia is a lightweight Discord bot that communicates with [KoboldAI Client](https://github.com/KoboldAI/KoboldAI-Client) API to generate plausible text conversations with artificial intelligence models.
 
 ## How to use
+
+Julia can be used through slash commands with `/ask <question>` or by mentioning her or replying to her messages.
 
 > You: @Julia What is your hair color?
 >
@@ -21,10 +26,6 @@
 
 - Slash commands
 - Responds to mentions and replies
-
-## More about Julia
-
-Julia works by communicating with [KoboldAI Client](https://github.com/KoboldAI/KoboldAI-Client) API to generate text using artificial intelligence.
 
 ## Commands
 
