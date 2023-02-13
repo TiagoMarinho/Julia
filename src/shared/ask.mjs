@@ -7,7 +7,8 @@ const queue = new Queue()
 export default async (character, question) => {
 
 	const chatHistory = character.chatHistory.join(`\n`)
-	const formattedQuestion = `You: ` + question.trim()
+	const questionPrefix = `You: `
+	const formattedQuestion = question.trim()
 	const responsePrefix = `${character.username}:`
 
 	const persistentData = [
@@ -20,6 +21,7 @@ export default async (character, question) => {
 	const prompt = [
 		persistentData, `\n`, 
 		chatHistory, chatHistory ? `\n` : "",
+		questionPrefix,
 		formattedQuestion, `\n`,
 		responsePrefix
 	].join(``)
@@ -57,7 +59,10 @@ export default async (character, question) => {
 
 	const reply = data.results[0].text.trim()
 
-	character.chatHistory.push(formattedQuestion, responsePrefix + " " + reply)
+	character.chatHistory.push(
+		questionPrefix + formattedQuestion, 
+		responsePrefix + " " + reply
+	)
 
 	if (character.chatHistory.length > MAX_PREVIOUS_MESSAGES_LENGTH)
 		character.chatHistory.splice(0, 2)
