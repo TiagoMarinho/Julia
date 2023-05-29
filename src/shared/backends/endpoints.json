@@ -1,0 +1,8 @@
+{
+	"koboldAI": {
+		"address": "http://127.0.0.1:5000"
+	},
+	"koboldHorde": {
+		"address": "https://stablehorde.net"
+	}
+}
