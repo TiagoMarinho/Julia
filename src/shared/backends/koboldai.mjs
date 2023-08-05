@@ -8,22 +8,23 @@ export default async prompt => {
 			prompt,
 			frmttriminc: true,
 			singleline: true,
-			rep_pen: 1.15,
 			frmtrmblln: true,
-			temperature: 0.55,
-			max_length: 80,
+			temperature: 0.8,
+			max_length: 256,
 			max_context_length: 2048,
-			"top_p": 0.2,
-			"top_k": 0,
-			"top_a": 0.0,
+			//"top_p": 0.9,
+			//"top_k": 0,
+			//"top_a": 0.0,
 			//"tfs": 0.68,
-			"typical": 1.0,
+			//"typical": 1.0,
+			rep_pen: 1.1,
+			stop_sequence: ["You:", "You: ", "<|user|>", "\n"],
 			use_memory: false,
 			use_story: false,
 			use_world_info: false
 	}
 	const endpoint = `${endpoints.koboldAI.address}/api/v1/generate/`
-	const response = await queue.add(async _ => {
+	const { id, response } = await queue.add(async _ => {
 		return await fetch(endpoint, {
 			method: `post`,
 			body: JSON.stringify(payload),

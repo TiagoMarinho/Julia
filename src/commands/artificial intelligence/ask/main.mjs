@@ -1,6 +1,6 @@
 import { EmbedBuilder } from 'discord.js'
 import data from './data.mjs'
-import ask from '../../../shared/ask.mjs'
+import { generate } from '../../../shared/ask.mjs'
 import characters from '../../../shared/characters.mjs'
 
 export default {
@@ -14,7 +14,7 @@ export default {
 
 		const character = characters[characterKey]
 
-		const content = await ask(character, question)
+		const content = await generate(character, question)
 
 		await interaction.editReply({ content })
 	}

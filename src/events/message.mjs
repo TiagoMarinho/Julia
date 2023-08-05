@@ -1,11 +1,15 @@
-import { Events } from 'discord.js'
-import ask from '../shared/ask.mjs'
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } from 'discord.js'
+import { generate } from '../shared/ask.mjs'
 import characters from '../shared/characters.mjs'
+import blacklist from '../blacklist.json' assert { type: 'json' }
 
 export default {
 	name: Events.MessageCreate,
 	async execute(interaction) {
 		if (!interaction.mentions.has(interaction.client.user)) 
+			return
+			
+		if (blacklist.includes(interaction.author.id))
 			return
 
 		const mentionRegex = new RegExp(`<@${interaction.client.user.id}>`, "g");
@@ -14,11 +18,19 @@ export default {
 		if (question.length === 0)
 			return
 		
-		const typing = interaction.channel.sendTyping();
+		const typing = interaction.channel.sendTyping()
 
-		const content = await ask(characters.default, question)
+		const { id, response } = await generate(characters.default, question)
+
+		const regenButton = new ButtonBuilder()
+			.setCustomId(`regen-1.0-${id}`)
+			.setLabel('Redo')
+			.setStyle(ButtonStyle.Success)
+
+		const row = new ActionRowBuilder()
+			.addComponents(regenButton)
 
 		await typing
-		await interaction.reply(content).catch(console.error)
+		await interaction.reply({ components: [row], content: response}).catch(console.error)
 	},
 }
