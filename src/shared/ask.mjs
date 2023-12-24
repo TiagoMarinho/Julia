@@ -3,7 +3,7 @@ import koboldHordeAPI from './backends/koboldai.mjs'
 import llamacppAPI from './backends/llamacpp.mjs'
 import oogaboogaAPI from './backends/oogabooga.mjs'
 
-const MAX_PREVIOUS_MESSAGES_LENGTH = 8
+const MAX_PREVIOUS_MESSAGES_LENGTH = 256
 let lastId = 0
 
 const ask = async (character, question, history = character.chatHistory) => {
@@ -25,6 +25,7 @@ const ask = async (character, question, history = character.chatHistory) => {
 	const prompt = [
 		character.summary,
 		chatHistory,
+		character.addendum,
 		promptPrefix + formattedQuestion,
 		responsePrefix.trim()
 	].join(`\n`)
@@ -52,10 +53,29 @@ export const generate = async (character, question) => {
 
 export const regenerate = async (character, id) => {
 	const entry = character.chatHistory.find(e => e.id === id)
+
+	if (typeof entry === "undefined")
+		return false
+
 	console.log(id, character.chatHistory, entry)
 	const response = await ask(character, entry.prompt, entry.chatHistory)
 
 	entry.response = response
 
 	return { id, response }
+}
+
+export const deleteEntry = async (character, id) => {
+	console.log(character.chatHistory)
+	const entryIndex = character.chatHistory.findIndex(e => e.id === id)
+	console.log(id, entryIndex)
+
+	if (entryIndex === -1)
+		return false
+
+	const entry = character.chatHistory[entryIndex]
+	character.chatHistory.splice(entryIndex, 1)
+	console.log("DELETED: ", id, entry)
+	
+	return true
 }

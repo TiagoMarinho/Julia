@@ -27,8 +27,13 @@ export default {
 			.setLabel('Redo')
 			.setStyle(ButtonStyle.Success)
 
+		const deleteButton = new ButtonBuilder()
+			.setCustomId(`del-1.0-${id}`)
+			.setLabel('Delete')
+			.setStyle(ButtonStyle.Danger)
+
 		const row = new ActionRowBuilder()
-			.addComponents(regenButton)
+			.addComponents(regenButton, deleteButton)
 
 		await typing
 		await interaction.reply({ components: [row], content: response}).catch(console.error)
