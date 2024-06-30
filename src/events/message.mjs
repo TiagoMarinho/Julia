@@ -19,8 +19,7 @@ export default {
 			return
 		
 		const typing = interaction.channel.sendTyping()
-
-		const { id, response } = await generate(characters.default, question)
+		const { id, response } = await generate(interaction.author.username, characters.default, question)
 
 		const regenButton = new ButtonBuilder()
 			.setCustomId(`regen-1.0-${id}`)

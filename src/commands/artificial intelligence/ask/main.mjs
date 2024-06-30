@@ -14,7 +14,7 @@ export default {
 
 		const character = characters[characterKey]
 
-		const content = await generate(character, question)
+		const content = await generate(interaction.user.username, character, question)
 
 		await interaction.editReply({ content })
 	}

@@ -9,6 +9,9 @@
 		"address": "http://127.0.0.1:8080"
 	},
 	"oogabooga": {
-		"address": "http://127.0.0.1:5000/"
+		"address": "http://127.0.0.1:5000"
+	},
+	"openai": {
+		"address": "http://127.0.0.1:5000"
 	}
 }

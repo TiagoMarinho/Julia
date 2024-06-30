@@ -9,26 +9,29 @@ export default {
 		if (!interaction.isButton()) 
 			return
 
+		if (blacklist.includes(interaction.user.id))
+			return //await interaction.reply({ content: `You are banned from using this button`, ephemeral: true })
+
 		await interaction.deferUpdate()
 
 		const identifiers = interaction.customId.split("-")
 		switch (identifiers[0]) {
 			case 'regen':
 				await regenButtonResponse(interaction)
-			break;
+			break
 			case 'del':
 				//console.log(`USER TRIED DELETING: `, interaction.member.nickname)
 				//return
-				await deleteEntry(characters.default, parseFloat(identifiers[2]))
+				await deleteEntry(characters.default, identifiers[2])
 				await interaction.deleteReply()
-			break;
+			break
 		}
 	},
 }
 
 const regenButtonResponse = async interaction => {
 	const identifiers = interaction.customId.split("-")
-	const id = parseFloat(identifiers[2])
+	const id = identifiers[2]
 	
 	//const typing = interaction.channel.sendTyping()
 
@@ -48,5 +51,6 @@ const regenButtonResponse = async interaction => {
 			.addComponents(regenButton, deleteButton)
 
 	//await typing
+	console.log(`REGENERATED: ${response}\nID: ${id}`)
 	await interaction.editReply({ components: [row], content: response}).catch(console.error)
 }

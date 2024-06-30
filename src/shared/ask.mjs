@@ -1,63 +1,68 @@
 import koboldClientAPI from './backends/koboldai.mjs'
 import koboldHordeAPI from './backends/koboldai.mjs'
 import llamacppAPI from './backends/llamacpp.mjs'
-import oogaboogaAPI from './backends/oogabooga.mjs'
+import openaiAPI from './backends/openai.mjs'
+import crypto from 'crypto'
 
 const MAX_PREVIOUS_MESSAGES_LENGTH = 256
-let lastId = 0
 
-const ask = async (character, question, history = character.chatHistory) => {
+const sleep = ms => 
+	new Promise(resolve => {
+		setTimeout(resolve, ms)
+	})
 
-	const promptPrefix = `USER: `
-	const responsePrefix = `ASSISTANT: `
+const ask = async (username, character, question, history = character.chatHistory) => {
 
-	const chatHistory = history
-		.slice(MAX_PREVIOUS_MESSAGES_LENGTH * -1)
+	const messages = history
+		//.slice(MAX_PREVIOUS_MESSAGES_LENGTH * -1)
 		.map(entry => [
-			promptPrefix + entry.prompt, 
-			responsePrefix + entry.response
+			{
+				role: "user",
+				content: entry.prompt
+			},
+			{
+				role: "assistant",
+				content: entry.response
+			}
 		])
 		.flat()
-		.join(`\n`)
 
-	const formattedQuestion = question.trim()
+	messages.push({
+		role: "user",
+		content: question.trim()
+	})
 
-	const prompt = [
-		character.summary,
-		chatHistory,
-		character.addendum,
-		promptPrefix + formattedQuestion,
-		responsePrefix.trim()
-	].join(`\n`)
+	const response = (await openaiAPI(username, messages, "", character)).trim()
 
-	const response = (await oogaboogaAPI(prompt)).trim()
-
-	console.log("\x1b[32m" + prompt + " " + "\x1b[36m\x1b[5m" + response + "\x1b[0m")
+	console.log("\x1b[32m" + question.trim() + " " + "\x1b[36m\x1b[5m" + response + "\x1b[0m")
 
 	return response
 }
 
-export const generate = async (character, question) => {
-	const response = await ask(character, question)
+export const generate = async (username, character, question) => {
+	//const s = sleep(14000)
+	const response = await ask(username, character, question)
+	//await s
+	const id = crypto.randomBytes(10).toString('hex')
+	console.log(`GENERATED: ${id}`)
 
 	const historyEntry = {
-		id: ++lastId, 
+		id, 
 		chatHistory: [...character.chatHistory],
 		prompt: question, 
 		response: response
 	}
 	character.chatHistory.push(historyEntry)
 
-	return { id: lastId, response }
+	return { id, response }
 }
 
-export const regenerate = async (character, id) => {
+export const regenerate = async (username, character, id) => {
 	const entry = character.chatHistory.find(e => e.id === id)
 
 	if (typeof entry === "undefined")
 		return false
 
-	console.log(id, character.chatHistory, entry)
 	const response = await ask(character, entry.prompt, entry.chatHistory)
 
 	entry.response = response
