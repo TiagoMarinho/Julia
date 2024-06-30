@@ -1,3 +1,4 @@
+import fetch from 'node-fetch'
 import endpoints from "./endpoints.json" assert { type: 'json' }
 import Queue from "../queue.mjs"
 
